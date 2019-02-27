@@ -1,4 +1,4 @@
-FROM alpine:3.9
+FROM alpine
 
 ARG CLI_VERSION
 
@@ -10,6 +10,10 @@ RUN apk add --no-cache --virtual=.build_dependencies wget && \
     rm rancher-linux-amd64-v${CLI_VERSION}.tar.gz && \
     rm -rf rancher-v${CLI_VERSION} && \
     apk del .build_dependencies && \
-    apk add --no-cache curl
+    apk add --no-cache curl tini
 
-ENTRYPOINT ["/usr/bin/rancher"]
+COPY entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]
+
+CMD ["rancher"]
